@@ -28,17 +28,19 @@ pipeline {
                 script {
                     withCredentials([usernamePassword(
                         credentialsId: "DockerHubCredentials",
-                        passwordVariable: "dockerHubPass",
-                        usernameVariable: "dockerHubUser"
+                        usernameVariable: "dockerHubUser",
+                        passwordVariable: "dockerHubPass"
                     )]) {
-                        // Log in to Docker Hub
-                        sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPass}"
+                        // Log in to Docker Hub securely using --password-stdin
+                        sh """
+                            echo ${dockerHubPass} | docker login -u ${dockerHubUser} --password-stdin
+                        """
                         
                         // Tag the image
-                        sh "docker image tag two-tier-flask-app ${env.dockerHubUser}/two-tier-flask-app:${env.BUILD_ID}"
+                        sh "docker image tag two-tier-flask-app ${dockerHubUser}/two-tier-flask-app:${env.BUILD_ID}"
                         
                         // Push the image to Docker Hub
-                        sh "docker push ${env.dockerHubUser}/two-tier-flask-app:${env.BUILD_ID}"
+                        sh "docker push ${dockerHubUser}/two-tier-flask-app:${env.BUILD_ID}"
                     }
                 }
             }
