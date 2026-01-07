@@ -29,10 +29,12 @@ pipeline{
                     usernameVariable : "dockerHubUser"
                 )]){
                 sh '''
+                      docker logout || true
                       echo "$dockerHubPass" | docker login -u "$dockerHubUser" --password-stdin
                       docker tag two-tier-flask-app:latest $dockerHubUser/two-tier-flask-app:latest
                       docker push $dockerHubUser/two-tier-flask-app:latest
                     '''
+
                 
                 }
             }
