@@ -2,7 +2,6 @@ version: "3.8"
 
 services:
   mysql:
-    user: "${UID}:${GID}" 
     image: mysql:5.7
     container_name: mysql
     environment:
@@ -33,7 +32,8 @@ services:
       MYSQL_PASSWORD: root
       MYSQL_DB: devops
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
     networks:
       - twotier
     restart: always
@@ -46,3 +46,4 @@ services:
 
 networks:
   twotier:
+
