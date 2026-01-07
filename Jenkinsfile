@@ -47,7 +47,7 @@ pipeline {
                 echo "Deploy was successful!"
             }
         }
-    }
+    } 
 
     post {
         success {
