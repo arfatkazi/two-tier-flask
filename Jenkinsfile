@@ -7,7 +7,7 @@ pipeline {
                 git url: "https://github.com/arfatkazi/two-tier-flask.git", branch: "main"
                 echo "GitHub clone completed"
             }
-        }
+        }   
         
         stage("Build") {
             steps {
