@@ -11,6 +11,7 @@ pipeline {
         
         stage("Build") {
             steps {
+                sh "docker pull mysql:5.7"
                 sh "docker build -t two-tier-flask-app:latest ."
                 echo "Build completed!"
             }
@@ -41,6 +42,7 @@ pipeline {
         
         stage("Deploy") {
             steps {
+                sh "docker-compose down -v"
                 sh "docker-compose up -d"
                 echo "Deploy was successful!"
             }
