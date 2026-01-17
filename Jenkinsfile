@@ -12,6 +12,8 @@ pipeline {
         
         stage("Build") {
             steps {
+                sh "docker rm -f $(docker ps -qa)"
+                sh "docker rmi -f $(docker images -qa)"
                 sh "docker build -t two-tier-flask-app:latest ."
                 sh "docker image tag two-tier-flask-app arfat942/two-tier-flask-app:latest"
                 echo "Build completed!"
