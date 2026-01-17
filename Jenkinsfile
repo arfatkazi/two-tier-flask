@@ -18,6 +18,7 @@ pipeline {
         stage("Build") {
             steps {
                 sh "docker build -t two-tier-flask-app:latest ."
+                sh "docker image tag two-tier-flask-app arfat942/two-tier-flask-app:latest"
                 echo "Build completed!"
             }
         } 
@@ -31,14 +32,13 @@ pipeline {
         stage("Push to DockerHub") {
             steps {
                 withCredentials([usernamePassword(
-                    credentialsId: "dockerHubCreds",
+                    credentialsId: "jenkin-master-key",
                     passwordVariable: "dockerHubPass",
                     usernameVariable: "dockerHubUser"
                 )]) {
                     sh '''
                         docker logout || true
                         echo "$dockerHubPass" | docker login -u "$dockerHubUser" --password-stdin
-                        docker tag two-tier-flask-app:latest $dockerHubUser/two-tier-flask-app:latest
                         docker push $dockerHubUser/two-tier-flask-app:latest
                     '''
                 }
@@ -47,29 +47,12 @@ pipeline {
         
         stage("Deploy") {
             steps {
-                sh "docker-compose up -d"
+                sh "docker compose down || true"
+                sh "docker-compose up -d --build"
                 echo "Deploy was successful!"
             }
         }
     } 
 
-    post {
-        success {
-            emailext(
-                from: "arfatkazi901@gmail.com",
-                to: "arfatkazi901@gmail.com",
-                subject: "Build success for Demo CI-CD App",
-                body: "Build success for Demo CI-CD App"
-            )
-        }
-
-        failure {
-            emailext(
-                from: "arfatkazi901@gmail.com",
-                to: "arfatkazi901@gmail.com",
-                subject: "Build failed for Demo CI-CD App",
-                body: "Build failed for Demo CI-CD App"
-            )
-        }
-    }
+    
 }
