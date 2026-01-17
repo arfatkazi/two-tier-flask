@@ -9,11 +9,6 @@ pipeline {
             }
         }   
 
-        stage("Trivy File System"){
-            steps{
-                sh "trivy fs . -o results.json"
-            }
-        }
         
         stage("Build") {
             steps {
